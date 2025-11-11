@@ -1,0 +1,21 @@
+def count_lines_chars(filename):
+    try:
+        with open(filename, 'r', encoding='utf-8') as file:
+            lines = file.readlines()
+            
+        total_lines = len(lines)
+        total_chars = sum(len(line.rstrip('\n')) for line in lines)
+        
+        avg_length = total_chars / total_lines if total_lines > 0 else 0
+        
+        print(f"Строк: {total_lines}")
+        print(f"Символов: {total_chars}")
+        print(f"Средняя длина строки: {avg_length:.2f}")
+        
+    except FileNotFoundError:
+        print(f"Файл {filename} не найден")
+    except Exception as e:
+        print(f"Ошибка: {e}")
+
+# Пример использования
+count_lines_chars("example.txt")
