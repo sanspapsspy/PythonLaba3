@@ -1,0 +1,39 @@
+def split_into_paragraphs(filename):
+    try:
+        with open(filename, 'r', encoding='utf-8') as file:
+            content = file.read()
+        
+        # Разделение по двойному переводу строки
+        paragraphs = content.split('\n\n')
+        
+        # Удаление пустых абзацев и лишних пробелов
+        paragraphs = [p.strip() for p in paragraphs if p.strip()]
+        
+        # Сохранение каждого абзаца в отдельный файл
+        for i, paragraph in enumerate(paragraphs, 1):
+            output_filename = f"part_{i}.txt"
+            with open(output_filename, 'w', encoding='utf-8') as f:
+                f.write(paragraph)
+        
+        print(f"Создано {len(paragraphs)} файлов с абзацами")
+        
+    except FileNotFoundError:
+        print(f"Файл {filename} не найден")
+    except Exception as e:
+        print(f"Ошибка: {e}")
+
+# Создание тестового файла article.txt
+test_article_content = """Первый абзац статьи.
+Он содержит несколько предложений.
+
+Второй абзац начинается здесь.
+И продолжается на этой строке.
+
+
+Третий абзац после двойного перевода строки."""
+
+with open("article.txt", "w", encoding="utf-8") as f:
+    f.write(test_article_content)
+
+# Пример использования
+split_into_paragraphs("article.txt")
