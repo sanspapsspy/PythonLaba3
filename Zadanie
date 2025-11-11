@@ -1,0 +1,191 @@
+import os
+
+def count_lines_chars():
+    """1. Подсчёт строк и символов"""
+    filename = input("Введите путь к файлу .txt: ").strip()
+    try:
+        with open(filename, 'r', encoding='utf-8') as file:
+            lines = file.readlines()
+            
+        total_lines = len(lines)
+        total_chars = sum(len(line.rstrip('\n')) for line in lines)
+        
+        avg_length = total_chars / total_lines if total_lines > 0 else 0
+        
+        print(f"Строк: {total_lines}")
+        print(f"Символов: {total_chars}")
+        print(f"Средняя длина строки: {avg_length:.2f}")
+        
+    except FileNotFoundError:
+        print(f"Файл {filename} не найден")
+    except Exception as e:
+        print(f"Ошибка: {e}")
+
+def find_error_lines():
+    """2. Поиск строк с 'ERROR' в log.txt"""
+    filename = "log.txt"
+    try:
+        with open(filename, 'r', encoding='utf-8') as file:
+            for line_num, line in enumerate(file, 1):
+                if "ERROR" in line:
+                    print(f"[{line_num}] {line.rstrip()}")
+                    
+    except FileNotFoundError:
+        print(f"Файл {filename} не найден. Создайте файл log.txt")
+    except Exception as e:
+        print(f"Ошибка: {e}")
+
+def create_sample_log():
+    """Создание тестового файла log.txt"""
+    test_log_content = """INFO System started
+DEBUG Loading configuration
+ERROR connection failed
+INFO User logged in
+ERROR database timeout
+WARNING High memory usage
+ERROR file not found"""
+
+    with open("log.txt", "w", encoding="utf-8") as f:
+        f.write(test_log_content)
+    print("Создан тестовый файл log.txt")
+
+def split_into_paragraphs():
+    """3. Разделение текста на абзацы"""
+    filename = "article.txt"
+    try:
+        with open(filename, 'r', encoding='utf-8') as file:
+            content = file.read()
+        
+        # Разделение по двойному переводу строки
+        paragraphs = content.split('\n\n')
+        
+        # Удаление пустых абзацев и лишних пробелов
+        paragraphs = [p.strip() for p in paragraphs if p.strip()]
+        
+        # Сохранение каждого абзаца в отдельный файл
+        for i, paragraph in enumerate(paragraphs, 1):
+            output_filename = f"part_{i}.txt"
+            with open(output_filename, 'w', encoding='utf-8') as f:
+                f.write(paragraph)
+        
+        print(f"Создано {len(paragraphs)} файлов с абзацами")
+        
+    except FileNotFoundError:
+        print(f"Файл {filename} не найден. Создайте файл article.txt")
+    except Exception as e:
+        print(f"Ошибка: {e}")
+
+def create_sample_article():
+    """Создание тестового файла article.txt"""
+    test_article_content = """Первый абзац статьи.
+Он содержит несколько предложений.
+
+Второй абзац начинается здесь.
+И продолжается на этой строке.
+
+
+Третий абзац после двойного перевода строки."""
+
+    with open("article.txt", "w", encoding="utf-8") as f:
+        f.write(test_article_content)
+    print("Создан тестовый файл article.txt")
+
+def merge_files():
+    """4. Объединение файлов"""
+    directory = input("Введите путь к папке с файлами (по умолчанию 'texts'): ").strip()
+    if not directory:
+        directory = "texts"
+    
+    try:
+        # Получение списка txt файлов и сортировка по алфавиту
+        txt_files = [f for f in os.listdir(directory) if f.endswith('.txt')]
+        txt_files.sort()
+        
+        if not txt_files:
+            print(f"В директории {directory} не найдено .txt файлов")
+            return
+            
+        with open("merged.txt", 'w', encoding='utf-8') as output_file:
+            for i, filename in enumerate(txt_files):
+                filepath = os.path.join(directory, filename)
+                
+                # Чтение и запись построчно
+                with open(filepath, 'r', encoding='utf-8') as input_file:
+                    for line in input_file:
+                        output_file.write(line)
+                
+                # Добавление разделителя, кроме последнего файла
+                if i < len(txt_files) - 1:
+                    output_file.write("==== конец файла ====\n")
+        
+        print(f"Объединено {len(txt_files)} файлов в merged.txt")
+        
+    except FileNotFoundError:
+        print(f"Директория {directory} не найдена")
+    except Exception as e:
+        print(f"Ошибка: {e}")
+
+def create_sample_texts():
+    """Создание тестовой директории с файлами"""
+    test_dir = "texts"
+    os.makedirs(test_dir, exist_ok=True)
+
+    test_files = {
+        "alpha.txt": "Содержимое файла alpha\nВторая строка",
+        "beta.txt": "Файл beta\nЕщё одна строка\nИ третья",
+        "gamma.txt": "Последний файл gamma"
+    }
+
+    for filename, content in test_files.items():
+        with open(os.path.join(test_dir, filename), 'w', encoding='utf-8') as f:
+            f.write(content)
+    print("Создана тестовая директория 'texts' с файлами")
+
+def show_menu():
+    """Отображение главного меню"""
+    print("\n" + "="*60)
+    print("ПРОГРАММА ДЛЯ РАБОТЫ С ФАЙЛАМИ")
+    print("="*60)
+    print("1. Подсчёт строк и символов в файле")
+    print("2. Поиск строк с 'ERROR' в log.txt")
+    print("3. Разделение текста на абзацы (article.txt)")
+    print("4. Объединение файлов из папки")
+    print("5. Создать тестовые файлы")
+    print("6. Выход")
+    print("="*60)
+
+def main():
+    while True:
+        show_menu()
+        
+        choice = input("Выберите задание (1-6): ").strip()
+        
+        if choice == '1':
+            count_lines_chars()
+            
+        elif choice == '2':
+            find_error_lines()
+            
+        elif choice == '3':
+            split_into_paragraphs()
+            
+        elif choice == '4':
+            merge_files()
+            
+        elif choice == '5':
+            create_sample_log()
+            create_sample_article()
+            create_sample_texts()
+            print("Все тестовые файлы созданы!")
+            
+        elif choice == '6':
+            print("Выход из программы")
+            break
+            
+        else:
+            print("Неверный выбор. Попробуйте снова.")
+        
+        input("\nНажмите Enter для продолжения...")
+
+if __name__ == "__main__":
+    main()
