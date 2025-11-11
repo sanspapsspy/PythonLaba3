@@ -1,0 +1,44 @@
+import os
+
+def merge_files(directory):
+    try:
+        # Получение списка txt файлов и сортировка по алфавиту
+        txt_files = [f for f in os.listdir(directory) if f.endswith('.txt')]
+        txt_files.sort()
+        
+        with open("merged.txt", 'w', encoding='utf-8') as output_file:
+            for i, filename in enumerate(txt_files):
+                filepath = os.path.join(directory, filename)
+                
+                # Чтение и запись построчно
+                with open(filepath, 'r', encoding='utf-8') as input_file:
+                    for line in input_file:
+                        output_file.write(line)
+                
+                # Добавление разделителя, кроме последнего файла
+                if i < len(txt_files) - 1:
+                    output_file.write("==== конец файла ====\n")
+        
+        print(f"Объединено {len(txt_files)} файлов в merged.txt")
+        
+    except FileNotFoundError:
+        print(f"Директория {directory} не найдена")
+    except Exception as e:
+        print(f"Ошибка: {e}")
+
+# Создание тестовой директории и файлов
+test_dir = "texts"
+os.makedirs(test_dir, exist_ok=True)
+
+test_files = {
+    "alpha.txt": "Содержимое файла alpha\nВторая строка",
+    "beta.txt": "Файл beta\nЕщё одна строка\nИ третья",
+    "gamma.txt": "Последний файл gamma"
+}
+
+for filename, content in test_files.items():
+    with open(os.path.join(test_dir, filename), 'w', encoding='utf-8') as f:
+        f.write(content)
+
+# Пример использования
+merge_files("texts")
